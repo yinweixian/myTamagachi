@@ -45,6 +45,7 @@ class Player(object):
             elif self.player_num == 4:
                 p4p[oldpos] = EMPTY
                 p4p[self.position] = self.peice
+    #allowning for a winner
     def win(self):
         if self.position == 99:
             return self.peice
@@ -54,10 +55,12 @@ class Player(object):
 
 class Board(object):
     def __init__(self):
+        #creating variables
         self.board  = []
 
 
     def create_space(self):
+        #I beileve that this creates all the shoots and ladders
         esp = Space(0)
         for i in range(100):
             self.board.append(esp)
@@ -97,9 +100,7 @@ class Board(object):
 
     def display_board(self):
 
-
-
-
+    #creating the board
         print("╔══════╦══════╦══════╦══════╦══════╦══════╦══════╦══════╦══════╦═══════╗")
         print(
             "║91" + p1p[90] + p2p[90] + "  ║92" + p1p[91] + p2p[91] + "  ║93" + p1p[92] + p2p[92] + "  ║94" + p1p[93] +
@@ -193,8 +194,10 @@ class Board(object):
 
 class Space(object):
     def __init__(self,move):
+        #creating variables
         self.move = move
     def move_player(self,player,board):
+        #checking players movements
         oldpos = player.position
         player.position = player.position+self.move
         if self.move>0:
@@ -216,13 +219,14 @@ class Space(object):
             elif player.player_num == 1:
                 p1p[oldpos] = EMPTY
                 p1p[player.position] = player.peice
-        board.displayboard()
+        board.display_board()
 
 
 
 #functions
 
 def ask_num(num1, num2):
+    #asking for a number
     num_input = "Enter a number between " + str(num1) + " and " + str(num2) + ": "
     while True:
         num = input(num_input)
@@ -233,14 +237,17 @@ def ask_num(num1, num2):
 
 
 def switch_turn(num_players, turn):
+    #switching turns
+    turn = turn
     if turn < num_players - 1:
         turn += 1
     else:
         turn = 0
-        return turn
+    return turn
 
 
 def winner_congrats(winner):
+    #congratulating the winner
     print("Congratulations!")
     print("...")
     time.sleep(1)
@@ -248,6 +255,7 @@ def winner_congrats(winner):
 
 
 def main():
+    #running everything together
     num_players = ask_num(2,4)
     players = []
     turn = 0
@@ -258,20 +266,70 @@ def main():
         name=name.title()
         player = Player(name,i+1)
         players.append(player)
+
+    for i in range(101):
+        p1p.append(EMPTY)
+        p2p.append(EMPTY)
+        p3p.append(EMPTY)
+        p4p.append(EMPTY)
+
+
     board = Board()
-    board.create_spaces()
+    board.create_space()
     while not winner:
         print(players[turn].name+" peice "+players[turn].peice+" it is your turn")
-        input("press enter to rooll")
+        input("press enter to roll")
         players[turn].move()
         playpos = players[turn].position
         space = board.board[playpos]
         space.move_player(players[turn],board)
+        winner = players[turn].win()
+        if not winner:
+            turn = switch_turn(num_players,turn)
+        if winner:
+            winner_congrats(winner)
+            input("press enter to quit")
+
 
 
 
 
 main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
